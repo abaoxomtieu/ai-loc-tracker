@@ -1,0 +1,14 @@
+[project]
+name = "ai-code-metrics-mcp"
+version = "0.1.0"
+description = "MCP Server for tracking AI agent code generation"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.25.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

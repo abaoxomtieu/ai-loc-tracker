@@ -1,0 +1,51 @@
+{
+  "name": "ai-code-metrics-tracker",
+  "displayName": "AI Code Metrics Tracker",
+  "description": "Track AI-augmented engineering metrics (completion, agent, manual)",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "AI Code Metrics",
+      "properties": {
+        "aiCodeMetrics.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "Backend API URL"
+        },
+        "aiCodeMetrics.developerId": {
+          "type": "string",
+          "default": "",
+          "description": "Developer identifier for tracking"
+        },
+        "aiCodeMetrics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable AI code metrics tracking"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ai-code-metrics": {
+      "command": "/bin/bash",
+      "args": [
+        "/Users/baohoton/Desktop/Code/untitled folder/LOC/mcp-server/run_server.sh"
+      ],
+      "env": {
+        "METRICS_BACKEND_URL": "http://localhost:8000"
+      }
+    }
+  }
+}
