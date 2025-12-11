@@ -113,5 +113,5 @@ echo ""
 echo "Next steps:"
 echo "1. Restart Cursor IDE"
 echo "2. Check MCP server status in Cursor settings"
-echo "3. Try using @ai-code-metrics in chat"
+echo "3. Try using @ai-loc-tracker in chat"
 

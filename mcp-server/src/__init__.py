@@ -1,2 +1,2 @@
-# MCP Server for AI Code Metrics
+# MCP Server for AI LOC Tracker
 

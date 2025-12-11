@@ -5,11 +5,13 @@ const AI_MARKER = "/*__AI__*/";
 
 export class CompletionTracker {
   private apiClient: ApiClient;
+  private outputChannel: vscode.OutputChannel;
   private disposables: vscode.Disposable[] = [];
   private pendingCompletions: Map<string, string> = new Map();
 
-  constructor(apiClient: ApiClient) {
+  constructor(apiClient: ApiClient, outputChannel: vscode.OutputChannel) {
     this.apiClient = apiClient;
+    this.outputChannel = outputChannel;
   }
 
   register(): vscode.Disposable {
@@ -30,7 +32,10 @@ export class CompletionTracker {
             // We'll track when completions are accepted via document changes
             return [];
           } catch (error) {
-            console.error("[CompletionTracker] Error in provideInlineCompletionItems:", error);
+            console.error(
+              "[CompletionTracker] Error in provideInlineCompletionItems:",
+              error
+            );
             return [];
           }
         },
@@ -55,16 +60,20 @@ export class CompletionTracker {
     // Check if this change contains our AI marker
     for (const change of event.contentChanges) {
       const text = change.text;
-      
+
       if (text.includes(AI_MARKER)) {
         // This is an AI completion that was accepted
         const cleanText = text.replace(new RegExp(AI_MARKER, "g"), "");
         const lines = this.countLines(cleanText);
-        
+
         if (lines > 0) {
           const filePath = event.document.uri.fsPath;
           const language = this.detectLanguage(event.document);
           const codeType = this.detectCodeType(filePath);
+
+          this.outputChannel.appendLine(
+            `[CompletionTracker] Detected AI completion: ${lines} lines of ${codeType} in ${filePath}`
+          );
 
           if (codeType === "test") {
             this.apiClient.sendTestEvent({
@@ -103,7 +112,7 @@ export class CompletionTracker {
 
   private detectCodeType(filePath: string): "code" | "test" | "documentation" {
     const lowerPath = filePath.toLowerCase();
-    
+
     // Detect test files
     if (
       lowerPath.includes("test") ||
@@ -113,7 +122,7 @@ export class CompletionTracker {
     ) {
       return "test";
     }
-    
+
     // Detect documentation files
     if (
       lowerPath.endsWith(".md") ||
@@ -123,7 +132,7 @@ export class CompletionTracker {
     ) {
       return "documentation";
     }
-    
+
     return "code";
   }
 
@@ -132,4 +141,3 @@ export class CompletionTracker {
     this.disposables = [];
   }
 }
-

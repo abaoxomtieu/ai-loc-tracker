@@ -1,6 +1,6 @@
-# AI Code Metrics Backend
+# AI LOC Tracker - Backend
 
-FastAPI backend for tracking AI-augmented engineering metrics.
+FastAPI backend for tracking AI-augmented engineering metrics and Lines of Code (LOC).
 
 ## Features
 

@@ -5,8 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from .api import events, metrics
 
 app = FastAPI(
-    title="AI Code Metrics API",
-    description="Backend API for tracking AI-augmented engineering metrics",
+    title="AI LOC Tracker API",
+    description="Backend API for tracking AI-augmented engineering metrics and Lines of Code (LOC)",
     version="0.1.0",
 )
 
@@ -28,7 +28,7 @@ app.include_router(metrics.router)
 async def root():
     """Root endpoint."""
     return {
-        "message": "AI Code Metrics API",
+        "message": "AI LOC Tracker API",
         "version": "0.1.0",
         "docs": "/docs",
     }

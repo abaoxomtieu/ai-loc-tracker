@@ -93,6 +93,26 @@ async def get_trends(
         raise HTTPException(status_code=500, detail=f"Failed to get trends: {str(e)}")
 
 
+@router.get("/features", response_model=dict)
+async def get_features_metrics(
+    limit: int = Query(20, ge=1, le=100, description="Maximum number of features to return"),
+) -> dict:
+    """
+    Get metrics grouped by feature_name.
+    
+    Args:
+        limit: Maximum number of features to return
+        
+    Returns:
+        Dictionary with features and their LOC counts
+    """
+    try:
+        features = aggregator.get_features_metrics(limit)
+        return features
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get features: {str(e)}")
+
+
 @router.get("/health", response_model=dict)
 async def health_check() -> dict:
     """
@@ -103,6 +123,6 @@ async def health_check() -> dict:
     """
     return {
         "status": "healthy",
-        "service": "ai-code-metrics-backend",
+        "service": "ai-loc-tracker-backend",
         "version": "0.1.0",
     }

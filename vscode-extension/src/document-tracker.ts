@@ -5,12 +5,15 @@ const AI_MARKER = "/*__AI__*/";
 
 export class DocumentTracker {
   private apiClient: ApiClient;
+  private outputChannel: vscode.OutputChannel;
   private disposables: vscode.Disposable[] = [];
   private lastChangeTime: Map<string, number> = new Map();
   private debounceDelay = 1000; // 1 second debounce
+  private pendingTimeouts: Map<string, NodeJS.Timeout> = new Map();
 
-  constructor(apiClient: ApiClient) {
+  constructor(apiClient: ApiClient, outputChannel: vscode.OutputChannel) {
     this.apiClient = apiClient;
+    this.outputChannel = outputChannel;
   }
 
   register(): vscode.Disposable {
@@ -29,14 +32,17 @@ export class DocumentTracker {
     const filePath = event.document.uri.fsPath;
     const now = Date.now();
     
-    // Debounce: only process if enough time has passed since last change
-    const lastChange = this.lastChangeTime.get(filePath) || 0;
-    if (now - lastChange < this.debounceDelay) {
-      return;
+    // Cancel any pending timeout for this file
+    const existingTimeout = this.pendingTimeouts.get(filePath);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+      this.pendingTimeouts.delete(filePath);
     }
-    this.lastChangeTime.set(filePath, now);
 
     // Process each content change
+    let totalLines = 0;
+    let hasValidChange = false;
+
     for (const change of event.contentChanges) {
       const text = change.text;
       
@@ -50,29 +56,42 @@ export class DocumentTracker {
       
       // Skip AI completions (handled by CompletionTracker)
       if (isAI) {
+        this.outputChannel.appendLine(`[DocumentTracker] Skipping AI completion in ${filePath}`);
         continue;
       }
 
       // This is manual code
       const lines = this.countLines(text);
-      
       if (lines > 0) {
+        totalLines += lines;
+        hasValidChange = true;
+      }
+    }
+
+    if (!hasValidChange || totalLines === 0) {
+      return;
+    }
+
         const language = this.detectLanguage(event.document);
         const codeType = this.detectCodeType(filePath);
 
+    this.outputChannel.appendLine(`[DocumentTracker] Detected ${totalLines} lines of manual ${codeType} code in ${filePath} (language: ${language})`);
+
         // Use setTimeout to debounce and batch changes
-        setTimeout(() => {
+    const timeout = setTimeout(() => {
+      this.pendingTimeouts.delete(filePath);
+      
           if (codeType === "test") {
             this.apiClient.sendTestEvent({
               source: "manual",
-              lines,
+          lines: totalLines,
               file_path: filePath,
               language,
             });
           } else if (codeType === "documentation") {
             this.apiClient.sendDocumentationEvent({
               source: "manual",
-              lines,
+          lines: totalLines,
               file_path: filePath,
               language,
               doc_type: this.detectDocType(filePath),
@@ -80,14 +99,14 @@ export class DocumentTracker {
           } else {
             this.apiClient.sendCodeEvent({
               source: "manual",
-              lines,
+          lines: totalLines,
               file_path: filePath,
               language,
             });
           }
         }, this.debounceDelay);
-      }
-    }
+
+    this.pendingTimeouts.set(filePath, timeout);
   }
 
   private countLines(text: string): number {
@@ -146,6 +165,10 @@ export class DocumentTracker {
   }
 
   dispose(): void {
+    // Clear all pending timeouts
+    this.pendingTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this.pendingTimeouts.clear();
+    
     this.disposables.forEach((d) => d.dispose());
     this.disposables = [];
   }

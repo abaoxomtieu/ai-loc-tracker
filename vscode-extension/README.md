@@ -1,6 +1,6 @@
-# AI Code Metrics Tracker - VSCode Extension
+# AI LOC Tracker - VSCode Extension
 
-VSCode extension to track AI-augmented engineering metrics.
+VSCode extension to track AI-augmented engineering metrics and Lines of Code (LOC).
 
 ## Features
 
@@ -30,17 +30,30 @@ npm run compile
 
 ### Production
 
-1. Package extension:
+1. Install dependencies (if not already done):
 
 ```bash
-npm install -g vsce
-vsce package
+cd vscode-extension
+npm install
 ```
 
-2. Install the `.vsix` file in VSCode:
-   - Open Command Palette (Cmd+Shift+P)
+2. Build and package extension:
+
+```bash
+# Option 1: Build and package in one command
+npm run build
+
+# Option 2: Package only (assumes already compiled)
+npm run package
+```
+
+This will create a `.vsix` file in the `vscode-extension` directory (e.g., `ai-loc-tracker-0.1.0.vsix`).
+
+3. Install the `.vsix` file in VSCode:
+   - Open Command Palette (Cmd+Shift+P or Ctrl+Shift+P)
    - Run "Extensions: Install from VSIX..."
    - Select the generated `.vsix` file
+   - Restart VSCode if needed
 
 ## Configuration
 

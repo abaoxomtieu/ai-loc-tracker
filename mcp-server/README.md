@@ -1,6 +1,6 @@
-# AI Code Metrics MCP Server
+# AI LOC Tracker - MCP Server
 
-MCP (Model Context Protocol) server for tracking AI agent-generated code.
+MCP (Model Context Protocol) server for tracking AI agent-generated code and Lines of Code (LOC).
 
 ## Features
 
@@ -63,7 +63,7 @@ Add to Cursor settings (`.cursor/mcp.json` or in Cursor settings):
 ```json
 {
   "mcpServers": {
-    "ai-code-metrics": {
+    "ai-loc-tracker": {
       "url": "http://localhost:8001",
       "transport": "sse"
     }
@@ -78,7 +78,7 @@ Add to Cursor settings (`.cursor/mcp.json` or in Cursor settings):
 ```json
 {
   "mcpServers": {
-    "ai-code-metrics": {
+    "ai-loc-tracker": {
       "command": "/path/to/.venv/bin/python",
       "args": ["-m", "src.server"],
       "cwd": "/path/to/mcp-server",

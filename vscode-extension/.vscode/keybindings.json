@@ -1,0 +1,9 @@
+[
+  {
+    "command": "aiLocTracker.showMetrics",
+    "key": "cmd+shift+m",
+    "mac": "cmd+shift+m",
+    "when": "editorTextFocus"
+  }
+]
+

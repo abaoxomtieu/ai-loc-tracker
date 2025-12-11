@@ -1,8 +1,9 @@
 {
-  "name": "ai-code-metrics-tracker",
-  "displayName": "AI Code Metrics Tracker",
-  "description": "Track AI-augmented engineering metrics (completion, agent, manual)",
+  "name": "ai-loc-tracker",
+  "displayName": "AI LOC Tracker",
+  "description": "Track AI-augmented engineering metrics and Lines of Code (LOC) - completion, agent, manual",
   "version": "0.1.0",
+  "publisher": "ai-loc-tracker",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -15,7 +16,7 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "AI Code Metrics",
+      "title": "AI LOC Tracker",
       "properties": {
         "aiCodeMetrics.backendUrl": {
           "type": "string",
@@ -33,19 +34,42 @@
           "description": "Enable AI code metrics tracking"
         }
       }
+    },
+    "commands": [
+      {
+        "command": "aiLocTracker.showMetrics",
+        "title": "Show Metrics",
+        "category": "AI LOC Tracker",
+        "icon": "$(graph)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "aiLocTracker.showMetrics",
+          "when": "true"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "aiLocTracker.showMetrics",
+          "when": "view == aiLocTrackerMetrics",
+          "group": "navigation"
+        }
+      ]
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "build": "npm run compile && npm run package"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.74.0",
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "axios": "^1.6.0"
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.22.0"
   }
 }

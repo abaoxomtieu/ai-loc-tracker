@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "ai-code-metrics": {
+    "ai-loc-tracker": {
       "command": "/bin/bash",
       "args": [
         "/Users/baohoton/Desktop/Code/untitled folder/LOC/mcp-server/run_server.sh"

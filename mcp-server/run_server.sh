@@ -5,3 +5,8 @@
 cd "/Users/baohoton/Desktop/Code/untitled folder/LOC/mcp-server"
 exec "/Users/baohoton/Desktop/Code/untitled folder/LOC/.venv/bin/python3" -m src.server "$@"
 
+
+
+
+
+

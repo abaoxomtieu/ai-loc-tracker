@@ -15,3 +15,8 @@ echo "Starting MCP server on $HOST:$PORT..."
 echo "Backend URL: ${METRICS_BACKEND_URL:-http://localhost:8000}"
 python -m src.server --transport sse --host "$HOST" --port "$PORT"
 
+
+
+
+
+

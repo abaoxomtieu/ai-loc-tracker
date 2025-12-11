@@ -207,6 +207,75 @@ class MetricsAggregator:
             "trends": trends,
         }
 
+    def get_features_metrics(
+        self,
+        limit: int = 20,
+    ) -> Dict:
+        """
+        Get metrics grouped by feature_name.
+        
+        Args:
+            limit: Maximum number of features to return
+            
+        Returns:
+            Dictionary with features and their LOC counts
+        """
+        # Load all events
+        events = self.storage.get_all_events()
+        
+        # Group by feature_name from metadata
+        features = {}
+        for event in events:
+            metadata = event.get("metadata") or {}
+            feature_name = metadata.get("feature_name") if isinstance(metadata, dict) else "unknown"
+            if not feature_name:
+                feature_name = "unknown"
+            
+            if feature_name not in features:
+                features[feature_name] = {
+                    "feature_name": feature_name,
+                    "total_loc": 0,
+                    "code_loc": 0,
+                    "test_loc": 0,
+                    "doc_loc": 0,
+                    "event_count": 0,
+                    "last_updated": None,
+                }
+            
+            features[feature_name]["total_loc"] += event.get("lines", 0)
+            features[feature_name]["event_count"] += 1
+            
+            # Track by type
+            event_type = event.get("type", "code")
+            if event_type == "code":
+                features[feature_name]["code_loc"] += event.get("lines", 0)
+            elif event_type == "test":
+                features[feature_name]["test_loc"] += event.get("lines", 0)
+            elif event_type == "documentation":
+                features[feature_name]["doc_loc"] += event.get("lines", 0)
+            
+            # Track last updated timestamp
+            event_timestamp = event.get("timestamp", "")
+            if event_timestamp:
+                if features[feature_name]["last_updated"] is None or event_timestamp > features[feature_name]["last_updated"]:
+                    features[feature_name]["last_updated"] = event_timestamp
+        
+        # Convert to list and sort by last_updated (most recent first)
+        features_list = list(features.values())
+        features_list.sort(
+            key=lambda x: x["last_updated"] if x["last_updated"] else "",
+            reverse=True
+        )
+        
+        # Limit results
+        features_list = features_list[:limit]
+        
+        return {
+            "features": features_list,
+            "total_features": len(features),
+            "showing": len(features_list),
+        }
+    
     def _calculate_overall_score(
         self,
         ai_loc_status: str,
