@@ -17,21 +17,31 @@ export class DocumentTracker {
   }
 
   register(): vscode.Disposable {
+    this.outputChannel.appendLine("[DocumentTracker] Registering document change listener...");
+    
     const changeListener = vscode.workspace.onDidChangeTextDocument(
       (event: vscode.TextDocumentChangeEvent) => {
-        this.handleDocumentChange(event);
+        // Only track if document is not in output or other special views
+        if (event.document.uri.scheme === "file" || event.document.uri.scheme === "untitled") {
+          this.handleDocumentChange(event);
+        }
       }
     );
 
     this.disposables.push(changeListener);
+    this.outputChannel.appendLine("[DocumentTracker] ✅ Document change listener registered");
 
     return vscode.Disposable.from(...this.disposables);
   }
 
   private handleDocumentChange(event: vscode.TextDocumentChangeEvent): void {
     const filePath = event.document.uri.fsPath;
-    const now = Date.now();
     
+    // Skip if no changes
+    if (event.contentChanges.length === 0) {
+      return;
+    }
+
     // Cancel any pending timeout for this file
     const existingTimeout = this.pendingTimeouts.get(filePath);
     if (existingTimeout) {
@@ -47,7 +57,7 @@ export class DocumentTracker {
       const text = change.text;
       
       // Skip if empty or only whitespace
-      if (!text.trim()) {
+      if (!text || !text.trim()) {
         continue;
       }
 
@@ -65,6 +75,7 @@ export class DocumentTracker {
       if (lines > 0) {
         totalLines += lines;
         hasValidChange = true;
+        this.outputChannel.appendLine(`[DocumentTracker] Detected ${lines} lines added in ${filePath}`);
       }
     }
 

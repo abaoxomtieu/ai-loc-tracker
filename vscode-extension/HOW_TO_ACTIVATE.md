@@ -86,7 +86,7 @@ Nếu extension không tự động activate, bạn có thể activate thủ cô
 2. **Vào tab Console**
 3. **Chạy lệnh:**
    ```javascript
-   vscode.extensions.getExtension('ai-loc-tracker.ai-loc-tracker')?.activate()
+   vscode.extensions.getExtension("ai-loc-tracker.ai-loc-tracker")?.activate();
    ```
 4. **Kiểm tra kết quả** - phải trả về `Promise` hoặc không có lỗi
 
@@ -101,12 +101,14 @@ Nếu extension không tự động activate, bạn có thể activate thủ cô
 ### Vấn đề 1: Extension không activate sau khi cài
 
 **Giải pháp:**
+
 1. Reload Window: `Cmd + Shift + P` → `Developer: Reload Window`
 2. Hoặc restart VSCode/Cursor hoàn toàn
 
 ### Vấn đề 2: Extension bị disable
 
 **Giải pháp:**
+
 1. Mở Extensions panel: `Cmd + Shift + X`
 2. Tìm "AI LOC Tracker"
 3. Click nút "Enable"
@@ -114,6 +116,7 @@ Nếu extension không tự động activate, bạn có thể activate thủ cô
 ### Vấn đề 3: Extension activate nhưng không thấy Output Channel
 
 **Giải pháp:**
+
 1. Kiểm tra Developer Console có lỗi không
 2. Thử activate thủ công qua Developer Console
 3. Xem logs trong Developer Console
@@ -121,6 +124,7 @@ Nếu extension không tự động activate, bạn có thể activate thủ cô
 ### Vấn đề 4: Extension không xuất hiện trong Extensions panel
 
 **Giải pháp:**
+
 1. Kiểm tra file `.vsix` có hợp lệ không
 2. Thử cài lại extension
 3. Kiểm tra VSCode version (phải >= 1.74.0)
@@ -140,4 +144,3 @@ Nếu extension không tự động activate, bạn có thể activate thủ cô
 2. **Không cần activate thủ công** trong hầu hết trường hợp
 3. **Reload window** là cách đơn giản nhất để activate extension sau khi cài mới
 4. **Output Channel** là cách tốt nhất để kiểm tra extension đã activate chưa
-

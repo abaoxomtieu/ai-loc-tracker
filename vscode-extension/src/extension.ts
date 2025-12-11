@@ -146,6 +146,7 @@ export function activate(context: vscode.ExtensionContext) {
     apiClient = new ApiClient(backendUrl, developerId, outputChannel);
 
     // Initialize trackers
+    outputChannel.appendLine("[Extension] Initializing trackers...");
     completionTracker = new CompletionTracker(apiClient, outputChannel);
     documentTracker = new DocumentTracker(apiClient, outputChannel);
 
@@ -155,6 +156,8 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(completionDisposable);
     context.subscriptions.push(documentDisposable);
+    
+    outputChannel.appendLine("[Extension] ✅ Trackers registered successfully");
     // Note: outputChannel already added to subscriptions at the beginning
 
     outputChannel.appendLine(
